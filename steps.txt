@@ -1,0 +1,18 @@
+setup Environment:
+
+Create a virtual environment using Python:
+1. python -m venv venv
+
+Activate the virtual environment:
+2. source venv/bin/activate # For Unix-based OS
+        .\venv\Scripts\activate # For Windows
+
+Install the requirements:
+3. pip install -r requirements.txt
+Configure Environment Variables:
+
+4. to run the internet page :  uvicorn main:app --reload
+
+5. to shut down virtual environment enter:deactivate
+
+6. to run from terminal enter :uvicorn main:app --reload
