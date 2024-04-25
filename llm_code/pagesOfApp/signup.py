@@ -37,15 +37,6 @@ st.markdown(
     unsafe_allow_html=True
 )
 
-# Streamlit page title
-st.title("Signup")
-
-# Collect user input
-username = st.text_input("Username")
-email = st.text_input("Email")
-password = st.text_input("Password", type="password")
-user_type = st.selectbox("User Type", ["prompt_engineer", "model_developer"])
-
 
 # Function to validate email format
 def validate_email(email):
@@ -88,13 +79,25 @@ def add_user(username, email, password, user_type):
     asyncio.run(add_user_async(username, email, password, user_type))
 
 
-# Signup button
-if st.button("Sign Up"):
-    # Perform validation checks
-    if not validate_email(email):
-        st.error("Invalid email format. Please enter a valid email address.")
-    elif not check_password_strength(password):
-        st.error("Password should be at least 8 characters long.")
-    else:
-        # Run the add_user function asynchronously
-        add_user(username, email, password, user_type)
+def signup():
+    st.title("Signup")
+
+    # Collect user input
+    username = st.text_input("Username")
+    email = st.text_input("Email")
+    password = st.text_input("Password", type="password")
+    user_type = st.selectbox("User Type", ["prompt_engineer", "model_developer"])
+
+    # Signup button
+    if st.button("Sign Up"):
+        # Perform validation checks
+        if not validate_email(email):
+            st.error("Invalid email format. Please enter a valid email address.")
+        elif not check_password_strength(password):
+            st.error("Password should be at least 8 characters long.")
+        else:
+            # Run the add_user function asynchronously
+            add_user(username, email, password, user_type)
+
+
+signup()

@@ -1,3 +1,4 @@
+evaluate==0.4.1
 fastapi~=0.109.2
 uvicorn
 sqlalchemy~=2.0.28
@@ -8,7 +9,6 @@ mysql-connector-python
 streamlit~=1.32.2
 bcrypt~=4.1.2
 openai~=1.16.2
-metrics~=0.3.3
 utils~=1.0.2
 nltk~=3.8.1
 transformers~=4.39.3

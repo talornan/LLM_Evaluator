@@ -2,7 +2,6 @@ import logging
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from sqlalchemy import Table, Column, Integer, String, Enum
-
 from llm_code.app.api.models.users import users
 from llm_code.app.core.config.db import con
 from llm_code.schemas.user import User
@@ -14,13 +13,11 @@ app = FastAPI()
 # Configure logging
 logging.basicConfig(level=logging.DEBUG)
 
-# Import necessary SQLAlchemy modules
-from sqlalchemy import select
-
 
 @app.post("/api/user", response_model=User)
 async def create_user(user_input: User):
     try:
+
         # Insert user data into the database
         data = con.execute(users.insert().values(
             username=user_input.username,
@@ -42,7 +39,7 @@ async def create_user(user_input: User):
                 "msg": "User created successfully"
             }
         else:
-            # If insertion failed, return an error response
+            # If insertion failed, raise an error response
             raise HTTPException(status_code=500, detail="Failed to create user")
     except SQLAlchemyError as e:
         # Log the error message

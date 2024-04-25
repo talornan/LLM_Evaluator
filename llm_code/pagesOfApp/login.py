@@ -1,21 +1,20 @@
 import streamlit as st
-from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import SQLAlchemyError
 
 import asyncio
 import sys
 
 sys.path.append('..')
+# Import necessary modules from your project
+from llm_code.app.api.models.users import users  # Assuming users model is imported correctly
+from llm_code.app.core.config.db import engine
 
-from llm_code.app.api.models.users import users
-from llm_code.schemas.user import User
-from llm_code.app.core.config.db import engine,meta
-
-
+# Create a session
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# Set the Streamlit theme colors directly
+# Set Streamlit theme colors
 st.markdown(
     """
     <style>
@@ -58,12 +57,21 @@ def login():
 
     # Check if the user has submitted the form
     if st.button("Login"):
-        # Authenticate the user
-        user = session.query(User).filter_by(username=username, password=password).first()
-        if user:
-            st.success("Login successful!")
-        else:
-            st.error("Invalid username or password. Please try again.")
+        try:
+            # Query the database for the user with the provided username
+            user = session.query(users).filter_by(username=username).first()
+
+            if user:
+                # If the user exists, check if the password matches
+                if user.password == password:
+                    st.success("Login successful!")
+                else:
+                    st.error("Invalid username or password. Please try again.")
+            else:
+                st.error("User does not exist. Please try again.")
+        except SQLAlchemyError as e:
+            st.error("An error occurred while processing your request. Please try again later.")
+            st.write(e)
 
 
 # Run the login function
