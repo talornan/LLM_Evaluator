@@ -5,10 +5,11 @@ from sqlalchemy.exc import SQLAlchemyError
 import asyncio
 import sys
 
-sys.path.append('..')
+sys.path.append('../..')
 # Import necessary modules from your project
 from llm_code.app.api.models.users import users  # Assuming users model is imported correctly
 from llm_code.app.core.config.db import engine
+from streamlit_extras.switch_page_button import switch_page
 
 # Create a session
 Session = sessionmaker(bind=engine)
@@ -65,6 +66,14 @@ def login():
                 # If the user exists, check if the password matches
                 if user.password == password:
                     st.success("Login successful!")
+                    st.balloons()
+                    # Check user type and switch to the appropriate page
+                    if user.user_type == "prompt_engineer":
+                        st.page_link("pages/LLMS_Analysis.py", label="LLMS_Analysis", icon=None)
+                    elif user.user_type == "model_developer":
+                        st.page_link("pages/LLMS_agg_Analysis.py", label="LLMS_agg_Analysis", icon=None)
+                    else:
+                        st.error("Unknown user type.")
                 else:
                     st.error("Invalid username or password. Please try again.")
             else:

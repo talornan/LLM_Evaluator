@@ -1,19 +1,14 @@
 import streamlit as st
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-import requests
+from streamlit_extras.switch_page_button import switch_page
 import logging
 import re  # Import regular expression module for email validation
 import asyncio
 import sys
 
-sys.path.append('..')
+sys.path.append('../..')
 
-from llm_code.app.api.models.users import users
 from llm_code.schemas.user import User
-from llm_code.pagesOfApp.login import login  # Import the login function
-from llm_code.app.core.config.db import engine, meta
-from llm_code.app.api.endpoints.UsersApi import create_user, get_users
+from llm_code.app.api.endpoints.UsersApi import create_user
 
 # Set Streamlit theme colors
 st.markdown(
@@ -98,6 +93,16 @@ def signup():
         else:
             # Run the add_user function asynchronously
             add_user(username, email, password, user_type)
+            # Button to navigate to login page
+            # Create a row for the buttons
+            col1, col2 = st.columns(2)
+
+            # Add buttons to the columns with custom CSS
+            with col1:
+                st.page_link("Home.py", label="home", icon="🏠")
+
+            with col2:
+                st.page_link("pages/login.py", label="login", icon=None)
 
 
 signup()

@@ -1,13 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="5d482cac-f225-4235-9379-f0b9db18cd13" name="Changes" comment="add">
+    <list default="true" id="5d482cac-f225-4235-9379-f0b9db18cd13" name="Changes" comment="update">
+      <change afterPath="$PROJECT_DIR$/llm_code/openai-test.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/llm_code/pagesOfApp/navigate.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/llm_code/pagesOfApp/pages/LLMS_agg_Analysis.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/llm_code/pagesOfApp/pages/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/llm_code/app/api/endpoints/UsersApi.py" beforeDir="false" afterPath="$PROJECT_DIR$/llm_code/app/api/endpoints/UsersApi.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/llm_code/grouped_bar_chart.png" beforeDir="false" afterPath="$PROJECT_DIR$/llm_code/grouped_bar_chart.png" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/llm_code/pagesOfApp/Home.py" beforeDir="false" afterPath="$PROJECT_DIR$/llm_code/pagesOfApp/Home.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/llm_code/pagesOfApp/login.py" beforeDir="false" afterPath="$PROJECT_DIR$/llm_code/pagesOfApp/login.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/llm_code/pagesOfApp/signup.py" beforeDir="false" afterPath="$PROJECT_DIR$/llm_code/pagesOfApp/signup.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llm_code/pagesOfApp/LLMS_Analysis.py" beforeDir="false" afterPath="$PROJECT_DIR$/llm_code/pagesOfApp/pages/LLMS_Analysis.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llm_code/pagesOfApp/login.py" beforeDir="false" afterPath="$PROJECT_DIR$/llm_code/pagesOfApp/pages/login.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/llm_code/pagesOfApp/signup.py" beforeDir="false" afterPath="$PROJECT_DIR$/llm_code/pagesOfApp/pages/signup.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -36,19 +41,19 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "DefaultHtmlFileTemplate": "HTML File",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "C:/Users/Tal Ornan/PycharmProjects/llm_code",
-    "list.type.of.created.stylesheet": "CSS",
-    "nodejs_package_manager_path": "npm",
-    "settings.editor.selected.configurable": "project.propVCSSupport.DirectoryMappings"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;DefaultHtmlFileTemplate&quot;: &quot;HTML File&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Tal Ornan/PycharmProjects/llm_code&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;project.propVCSSupport.DirectoryMappings&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Tal Ornan\PycharmProjects\LLM Evaluator\pagesOfApp" />
@@ -57,11 +62,11 @@
       <recent name="C:\Users\Tal Ornan\PycharmProjects\LLM Evaluator\app\api" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Tal Ornan\PycharmProjects\LLM Evaluator\llm_code\pagesOfApp\pages" />
+      <recent name="C:\Users\Tal Ornan\PycharmProjects\LLM Evaluator\llm_code\pagesOfApp" />
       <recent name="C:\Users\Tal Ornan\PycharmProjects\LLM Evaluator\python" />
       <recent name="C:\Users\Tal Ornan\PycharmProjects\LLM Evaluator\app\api\endpoints" />
       <recent name="C:\Users\Tal Ornan\PycharmProjects\LLM Evaluator\app\api" />
-      <recent name="C:\Users\Tal Ornan\PycharmProjects\LLM Evaluator" />
-      <recent name="C:\Users\Tal Ornan\PycharmProjects\LLM Evaluator\pagesOfApp\style" />
     </key>
   </component>
   <component name="RunManager" selected="Python.UsersApi">
@@ -185,7 +190,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/llm_code/pagesOfApp/login.py" />
+      <option name="SCRIPT_NAME" value="C:\Users\Tal Ornan\PycharmProjects\LLM Evaluator\llm_code\pagesOfApp\pages\login.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -229,7 +234,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/llm_code/pagesOfApp/signup.py" />
+      <option name="SCRIPT_NAME" value="C:\Users\Tal Ornan\PycharmProjects\LLM Evaluator\llm_code\pagesOfApp\pages\signup.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="true" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -267,8 +272,18 @@
       <workItem from="1712733605781" duration="3959000" />
       <workItem from="1712738873422" duration="5330000" />
       <workItem from="1712747063497" duration="27919000" />
-      <workItem from="1713707074261" duration="18968000" />
+      <workItem from="1713707074261" duration="38968000" />
+      <workItem from="1714234233763" duration="12673000" />
+      <workItem from="1714300823556" duration="6962000" />
     </task>
+    <task id="LOCAL-00001" summary="update">
+      <created>1714051156538</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1714051156538</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -287,7 +302,8 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="add" />
-    <option name="LAST_COMMIT_MESSAGE" value="add" />
+    <MESSAGE value="update" />
+    <option name="LAST_COMMIT_MESSAGE" value="update" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -303,9 +319,14 @@
           <option name="timeStamp" value="3" />
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/llm_code/pagesOfApp/login.py</url>
-          <line>78</line>
+          <url>file://$PROJECT_DIR$/llm_code/pagesOfApp/pages/login.py</url>
+          <line>79</line>
           <option name="timeStamp" value="10" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/llm_code/app/api/endpoints/UsersApi.py</url>
+          <line>73</line>
+          <option name="timeStamp" value="11" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
