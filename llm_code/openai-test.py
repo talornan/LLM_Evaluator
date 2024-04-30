@@ -1,3 +1,4 @@
+import evaluate
 from openai import OpenAI
 
 api_key = "sk-proj-UeiL7KrdPp5gGML8bAlkT3BlbkFJWk0ZR9TY54s6TVcgiuOq"
@@ -13,3 +14,13 @@ completion = client.chat.completions.create(
 )
 
 print(completion.choices[0].message)
+
+# rouge = evaluate.load('rouge')
+# predictions = ["hello goodbye", "ankh morpork"]
+# references = ["goodbye", "general kenobi"]
+# results = rouge.compute(predictions=predictions,
+#                         references=references,
+#                         rouge_types=['rouge_1'],
+#                         use_aggregator=True)
+# print(list(results.keys()))
+# print(results["rouge1"])

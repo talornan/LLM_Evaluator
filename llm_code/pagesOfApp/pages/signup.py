@@ -9,28 +9,9 @@ sys.path.append('../..')
 
 from llm_code.schemas.user import User
 from llm_code.app.api.endpoints.UsersApi import create_user
+from llm_code.pagesOfApp.style.LLMS_Analysis_style import configure_streamlit_theme
 
-# Set Streamlit theme colors
-st.markdown(
-    """
-    <style>
-    /* Streamlit app background */
-    body {
-        background-color: #87cefa; /* light blue */
-    }
-    /* Streamlit text color */
-    .stTextInput>div>div>input {
-        color: #800080; /* purple */
-    }
-    /* Streamlit button */
-    .stButton>button {
-        background-color: #ff69b4; /* pink */
-        color: #fff; /* white */
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
+st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
 
 
 # Function to validate email format
@@ -103,6 +84,9 @@ def signup():
 
             with col2:
                 st.page_link("pages/login.py", label="login", icon=None)
+
+    else:
+        st.page_link("Home.py", label="home", icon="🏠")
 
 
 signup()

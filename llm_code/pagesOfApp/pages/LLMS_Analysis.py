@@ -8,15 +8,17 @@ import sys
 sys.path.append('../..')
 from llm_code.app.api.endpoints.analysisAPI import create_prompt
 from llm_code.pagesOfApp.style.LLMS_Analysis_style import configure_streamlit_theme
+from llm_code.llm_metrics import Metrics
 import logging
 
+
 # Set up your OpenAI API key
-client = OpenAI(api_key="sk-proj-UeiL7KrdPp5gGML8bAlkT3BlbkFJWk0ZR9TY54s6TVcgiuOq")
+client = OpenAI(api_key=)
 
 st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
 
 # Define available metrics
-available_metrics = ["Rouge", "Coherence", "Fluency", "Toxicity"]
+available_metrics = ["Rouge", "Coherence", "Fluency", "Toxicity", "Bleu"]
 
 # Define available language models with their corresponding model IDs
 available_models = {
@@ -28,6 +30,7 @@ available_models = {
 model_colors = ['#FF69B4', '#9370DB']  # Pink, Purple
 metric_colors = ['#ADD8E6', '#FFD700', '#00FF00', '#00FFFF']  # Light Blue, Gold, Green, Cyan
 
+
 # Function to generate a download link for the bar chart
 def get_image_download_link(fig):
     """Generates a download link for the bar chart as a PNG image."""
@@ -37,6 +40,7 @@ def get_image_download_link(fig):
     b64 = base64.b64encode(data).decode()
     href = f'<a href="data:file/png;base64,{b64}" download="grouped_bar_chart.png">Download Grouped Bar Chart</a>'
     return href
+
 
 # Async function to add prompt
 async def add_prompt(prompt_text):
@@ -52,6 +56,7 @@ async def add_prompt(prompt_text):
         print(f"Error: {e}")
         logging.error(f"Error adding prompt: {e}")
 
+
 # Function to handle database interaction
 def handle_database(prompt_text):
     try:
@@ -61,6 +66,7 @@ def handle_database(prompt_text):
     except Exception as e:
         st.error(f"Error adding prompt to database: {e}")
 
+
 # Main Streamlit app
 st.title("LLMS Response Generator and Metrics Analysis")
 
@@ -68,6 +74,9 @@ st.title("LLMS Response Generator and Metrics Analysis")
 prompt_analyze = st.text_input("Enter Prompt to Analyze", "Enter your prompt here...")
 selected_models = st.multiselect("Select Language Models", list(available_models.keys()), default=["GPT-4 Turbo"])
 selected_metrics = st.multiselect("Select Metrics", available_metrics, default=["Rouge"])
+
+# Instantiate the Metrics class
+metrics = Metrics()
 
 # Generate response button for analysis
 if st.button("Generate Response"):
@@ -91,17 +100,44 @@ if st.button("Generate Response"):
                 messages=[{"role": "system", "content": prompt_analyze}],
                 max_tokens=100
             )
-            responses.append(response.choices[0].message.content.strip())
+            response_text = response.choices[0].message.content.strip()
+            responses.append(response_text)
+            # Set predictions and references for ROUGE metric
+            Metrics.predictions = [response_text]
+            print('************qustions:***********')
+            print(Metrics.predictions)
+            Metrics.references = [prompt_analyze]
+            print('****************answer*************')
+            print(Metrics.references)
 
             # Calculate metrics for the response
             for metric in selected_metrics:
-                score = np.random.rand()  # Placeholder for actual metric calculation
+                if metric == "Rouge":
+                    # For ROUGE, compute the score using the Metrics class
+                    score = metrics.rouge_score()
+                    print(f"{model_name} {metric} score:{score}")
+                elif metric == "Bleu":
+                    # For BLEU, compute the score using the Metrics class
+                    score = metrics.bleu_score()
+                    print(f"{model_name} {metric} score:{score}")
+                elif metric == "Fluency":
+                    # For Fluency, compute the score using the Metrics class
+                    score = metrics.fluency_score()
+                elif metric == "Coherence":
+                    # For Coherence, compute the score using the Metrics class
+                    score = metrics.coherence_score()
+                elif metric == "Toxicity":
+                    # For Toxicity, compute the score using the Metrics class
+                    score = metrics.toxicity_score()
+                else:
+                    # Handle unknown metric
+                    score = np.nan
                 metric_scores[metric].append(score)
 
         # Display generated responses
         for i, response in enumerate(responses):
             st.subheader(f"Response from {selected_models[i]}")
-            st.text_area(f"Response {i+1}", response, height=200)
+            st.text_area(f"Response {i + 1}", response, height=200)
 
         # Display metric scores
         st.subheader("Metric Scores:")

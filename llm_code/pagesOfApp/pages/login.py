@@ -10,46 +10,15 @@ sys.path.append('../..')
 from llm_code.app.api.models.users import users  # Assuming users model is imported correctly
 from llm_code.app.core.config.db import engine
 from streamlit_extras.switch_page_button import switch_page
+from llm_code.pagesOfApp.style.LLMS_Analysis_style import configure_streamlit_theme
 
 # Create a session
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# Set Streamlit theme colors
-st.markdown(
-    """
-    <style>
-    /* Streamlit app background */
-    body {
-        background-color: #87cefa;
-    }
-    /* Streamlit app title */
-    .stApp {
-        color: #ff69b4;
-    }
-    /* Streamlit button */
-    .stButton>button {
-        background-color: #800080;
-        color: #fff;
-    }
-    /* Streamlit text */
-    .stTextInput>div>div>input {
-        color: #87cefa;
-    }
-    /* Streamlit selectbox */
-    .st-af {
-        color: #ff69b4;
-    }
-    .st-d4 {
-        color: #800080;
-    }
-    </style>
-    """,
-    unsafe_allow_html=True
-)
-
 
 def login():
+    st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
     st.title("Login")
 
     # Collect login information from the user
@@ -81,6 +50,9 @@ def login():
         except SQLAlchemyError as e:
             st.error("An error occurred while processing your request. Please try again later.")
             st.write(e)
+
+    else:
+        st.page_link("Home.py", label="home", icon="🏠")
 
 
 # Run the login function
