@@ -2,6 +2,10 @@ import logging
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from sqlalchemy import Table, Column, Integer, String, Enum
+import asyncio
+import sys
+
+sys.path.append('../..')
 from llm_code.app.api.models.users import users
 from llm_code.app.core.config.db import con
 from llm_code.schemas.user import User

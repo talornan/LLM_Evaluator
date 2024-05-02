@@ -3,6 +3,10 @@ import logging
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from sqlalchemy.exc import SQLAlchemyError
+import asyncio
+import sys
+
+sys.path.append('../..')
 from llm_code.app.api.models.prompts import prompts
 from llm_code.app.core.config.db import con
 from llm_code.schemas.prompt import Prompt

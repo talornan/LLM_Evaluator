@@ -59,9 +59,9 @@ def signup():
     st.title("Signup")
 
     # Collect user input
-    username = st.text_input("Username")
-    email = st.text_input("Email")
-    password = st.text_input("Password", type="password")
+    username = st.text_input("Username", placeholder="Enter your username")
+    email = st.text_input("Email", placeholder="Enter your email")
+    password = st.text_input("Password", type="password", placeholder="Enter your password")
     user_type = st.selectbox("User Type", ["prompt_engineer", "model_developer"])
 
     # Signup button

@@ -3,7 +3,10 @@ from evaluate import load
 from datasets import load_metric
 
 from transformers import pipeline
+import asyncio
+import sys
 
+sys.path.append('../..')
 
 class Metrics:
     def __init__(self, predictions, references):
@@ -38,7 +41,7 @@ class MetricsModel:
         return results['toxicity']
 
     def fluency_score(self):
-        perplexity = load("perplexity", module_type="metric")
+        perplexity = load("perplexity", module_type="measurement")
         results = perplexity.compute(predictions=self.predictions, model_id=self.model_type)
         print(f"Fluency: {results}")
         return results

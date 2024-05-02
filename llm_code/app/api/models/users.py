@@ -1,4 +1,8 @@
 from sqlalchemy import Table, Column, Integer, String, Enum
+import asyncio
+import sys
+
+sys.path.append('../..')
 from llm_code.app.core.config.db import meta
 
 users = Table(

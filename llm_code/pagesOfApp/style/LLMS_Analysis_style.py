@@ -1,4 +1,8 @@
 # streamlit_style.py
+import asyncio
+import sys
+
+sys.path.append('../..')
 
 def configure_streamlit_theme():
     primary_color = '#FF69B4'  # Pink

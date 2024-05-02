@@ -1,4 +1,8 @@
 from sqlalchemy import Table, Column, Integer, String, ForeignKey
+import asyncio
+import sys
+
+sys.path.append('../..')
 from llm_code.app.core.config.db import meta
 
 # models/llm_models.py
