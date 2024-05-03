@@ -5,7 +5,7 @@ import sys
 sys.path.append('../..')
 from llm_code.app.core.config.db import meta
 
-# models/llm_models.py
+
 llm_models = Table(
     'LLMModels', meta,
     Column('model_id', Integer, primary_key=True),

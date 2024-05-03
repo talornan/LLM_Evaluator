@@ -72,13 +72,11 @@ def signup():
         elif not check_password_strength(password):
             st.error("Password should be at least 8 characters long.")
         else:
-            # Run the add_user function asynchronously
             add_user(username, email, password, user_type)
             # Button to navigate to login page
             # Create a row for the buttons
             col1, col2 = st.columns(2)
 
-            # Add buttons to the columns with custom CSS
             with col1:
                 st.page_link("Home.py", label="home", icon="🏠")
 

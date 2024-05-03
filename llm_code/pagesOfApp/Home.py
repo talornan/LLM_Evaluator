@@ -10,12 +10,11 @@ sys.path.append('..')
 from llm_code.pagesOfApp.style.LLMS_Analysis_style import configure_streamlit_theme
 
 
-# Define homepage function
 def home():
     # Define colors
-    background_color = "#f0f0f0"  # Light gray
-    title_color = "#ff69b4"  # Pink
-    text_color = "#800080"  # Purple
+    background_color = "#f0f0f0"
+    title_color = "#ff69b4"
+    text_color = "#800080"
 
     st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
     st.image('logo/logo2.png', width=150)
@@ -25,7 +24,6 @@ def home():
     # Create a row for the buttons
     col1, col2, col3 = st.columns(3)
 
-    # Add buttons to the columns with custom CSS
     with col1:
         if st.button("Login", key="login_button"):
             switch_page("login")

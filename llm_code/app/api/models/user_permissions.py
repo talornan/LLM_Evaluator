@@ -5,7 +5,6 @@ import sys
 sys.path.append('../..')
 from llm_code.app.core.config.db import meta
 
-# models/user_permissions.py
 user_permissions = Table(
     'UserPermissions', meta,
     Column('permission_id', Integer, primary_key=True),

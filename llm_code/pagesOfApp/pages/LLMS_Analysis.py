@@ -49,7 +49,7 @@ def get_image_download_link(fig):
 async def add_prompt(prompt_text):
     try:
         prompt_data = {"prompt_text": prompt_text}
-        response = await create_prompt(prompt_data)  # Await create_prompt function
+        response = await create_prompt(prompt_data)
         if isinstance(response, dict) and response.get("success"):
             print("Prompt added successfully!")
         else:
@@ -62,7 +62,7 @@ async def add_prompt(prompt_text):
 # Function to handle database interaction
 def handle_database(prompt_text):
     try:
-        # Call the async function to add the prompt
+
         st.write("Adding prompt to database...")
         add_prompt(prompt_text)
     except Exception as e:
@@ -91,7 +91,7 @@ if st.button("Generate Response"):
         metric_scores = {metric: [] for metric in selected_metrics}
 
         # Generate response for each selected model
-        for model_name in selected_model:  # Change selected_model to selected_models
+        for model_name in selected_model:
             model_id = available_models[model_name]
             response = client.chat.completions.create(
                 model=model_id,
@@ -104,24 +104,24 @@ if st.button("Generate Response"):
             # Calculate metrics for the response
             for metric in selected_metrics:
                 if metric == "Rouge":
-                    # For ROUGE, compute the score using RougeScorer
+
                     score = Metrics(predictions=[response_text], references=[prompt_analyze]).rouge_score()
                 elif metric == "Bleu":
-                    # For BLEU, compute the score using the Metrics class
+
                     score = Metrics(predictions=[response_text], references=[prompt_analyze]).bleu_score()
                 elif metric == "Fluency":
-                    # For Fluency, compute the score using the Metrics class
+
                     score = MetricsModel(predictions=[response_text],
-                                         model_type=model_name.lower()).fluency_score()  # Use model_name instead of selected_model
+                                         model_type=model_name.lower()).fluency_score()
                 elif metric == "exact_match":
-                    # For Coherence, compute the score using the Metrics class
+
                     score = Metrics(predictions=[response_text], references=[prompt_analyze]).exact_match_score()
                 elif metric == "Toxicity":
-                    # For Toxicity, compute the score using the Metrics class
+
                     score = MetricsModel(predictions=[response_text],
-                                         model_type=model_name.lower()).toxicity_score()  # Use model_name instead of selected_model
+                                         model_type=model_name.lower()).toxicity_score()
                 else:
-                    # Handle unknown metric
+
                     score = np.nan
                 metric_scores[metric].append(score)
 

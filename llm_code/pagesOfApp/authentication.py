@@ -1,5 +1,9 @@
 import re
 import bcrypt
+import asyncio
+import sys
+
+sys.path.append('../..')
 
 # Dummy database to store registered users
 registered_users = {}

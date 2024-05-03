@@ -25,7 +25,6 @@ def login():
     username = st.text_input("Username", placeholder="Enter your username", max_chars=20)
     password = st.text_input("Password", type="password", placeholder="Enter your password", max_chars=50)
 
-    # Check if the user has submitted the form
     if st.button("Login"):
         try:
             # Query the database for the user with the provided username

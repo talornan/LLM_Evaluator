@@ -87,10 +87,10 @@ st.markdown(custom_css, unsafe_allow_html=True)  # Apply custom CSS
 
 st.title("Model Evaluation")
 
-# Select multiple models
+
 selected_models = st.multiselect("Select Models", models)
 
-# Select aggregate function
+
 selected_function = st.selectbox("Select Aggregate Function", ["Mean", "Median", "Max", "Min", "Sum"])
 
 # Calculate aggregated metric for the selected models
