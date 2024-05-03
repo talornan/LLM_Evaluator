@@ -1,4 +1,7 @@
+import asyncio
 import logging
+
+from fastapi import requests
 from rouge_score import rouge_scorer
 
 import streamlit as st
@@ -12,6 +15,7 @@ sys.path.append('../..')
 from llm_code.app.api.endpoints.analysisAPI import create_prompt
 from llm_code.pagesOfApp.style.LLMS_Analysis_style import configure_streamlit_theme
 from llm_code.llm_metrics import Metrics, MetricsModel
+from llm_code.app.api.endpoints.analysis_results_Api import create_analysis_result, get_analysis_results
 from evaluate import load
 from datasets import load_metric
 
@@ -45,28 +49,36 @@ def get_image_download_link(fig):
     return href
 
 
-# Async function to add prompt
-async def add_prompt(prompt_text):
+# Define an asynchronous function to handle database interaction
+async def handle_database(prompt_text, responses, metric_scores, selected_model):
     try:
-        prompt_data = {"prompt_text": prompt_text}
-        response = await create_prompt(prompt_data)
-        if isinstance(response, dict) and response.get("success"):
-            print("Prompt added successfully!")
-        else:
-            print("Failed to add prompt. Please try again later.")
+        # Add analysis results to the database
+        for response, model_name in zip(responses, selected_model):
+            for metric_name, metric_value in metric_scores.items():
+                # Ensure metric_value is a single value, not a list
+                if isinstance(metric_value, list):
+                    metric_value = metric_value[selected_model.index(model_name)]
+
+                data = {
+                    "prompt": prompt_text,
+                    "response": response,
+                    "metric_name": metric_name,
+                    "metric_value": metric_value,
+                    "model_name": model_name
+                }
+                result = await create_analysis_result(data)
+                if result:
+                    st.write("Analysis result stored successfully:")
+                    st.write(result)
+                else:
+                    st.error("Failed to store analysis result. Please check the server logs.")
     except Exception as e:
-        print(f"Error: {e}")
-        logging.error(f"Error adding prompt: {e}")
+        st.error(f"Error handling database operations: {e}")
+        logging.error(f"Error handling database operations: {e}")
 
 
-# Function to handle database interaction
-def handle_database(prompt_text):
-    try:
-
-        st.write("Adding prompt to database...")
-        add_prompt(prompt_text)
-    except Exception as e:
-        st.error(f"Error adding prompt to database: {e}")
+def store_analysis_results(prompt_text, responses, metric_scores, selected_model):
+    asyncio.run(handle_database(prompt_text, responses, metric_scores, selected_model))
 
 
 st.title("LLMS Response Generator and Metrics Analysis")
@@ -124,7 +136,8 @@ if st.button("Generate Response"):
 
                     score = np.nan
                 metric_scores[metric].append(score)
-
+        # Store analysis results in the database
+        store_analysis_results(prompt_analyze, responses, metric_scores, selected_model)
         # Display generated responses
         for i, response in enumerate(responses):
             st.subheader(f"Response from {selected_model[i]}")
