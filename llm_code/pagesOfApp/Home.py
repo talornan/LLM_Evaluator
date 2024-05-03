@@ -7,7 +7,7 @@ import sys
 
 sys.path.append('..')
 
-from llm_code.pagesOfApp.style.LLMS_Analysis_style import configure_streamlit_theme
+from llm_code.pagesOfApp.style.style import configure_streamlit_theme
 
 
 def home():

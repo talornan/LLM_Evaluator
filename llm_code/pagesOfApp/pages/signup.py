@@ -9,7 +9,7 @@ sys.path.append('../..')
 
 from llm_code.schemas.user import User
 from llm_code.app.api.endpoints.UsersApi import create_user
-from llm_code.pagesOfApp.style.LLMS_Analysis_style import configure_streamlit_theme
+from llm_code.pagesOfApp.style.style import configure_streamlit_theme
 
 st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
 

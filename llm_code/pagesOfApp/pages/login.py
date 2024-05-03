@@ -10,7 +10,7 @@ sys.path.append('../..')
 from llm_code.app.api.models.users import users  # Assuming users model is imported correctly
 from llm_code.app.core.config.db import engine
 from streamlit_extras.switch_page_button import switch_page
-from llm_code.pagesOfApp.style.LLMS_Analysis_style import configure_streamlit_theme
+from llm_code.pagesOfApp.style.style import configure_streamlit_theme
 
 # Create a session
 Session = sessionmaker(bind=engine)

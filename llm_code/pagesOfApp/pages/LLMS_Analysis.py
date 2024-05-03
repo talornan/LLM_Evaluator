@@ -2,7 +2,6 @@ import asyncio
 import logging
 
 from fastapi import requests
-from rouge_score import rouge_scorer
 
 import streamlit as st
 from openai import OpenAI
@@ -11,9 +10,10 @@ import base64
 import matplotlib.pyplot as plt
 import sys
 
+
 sys.path.append('../..')
 from llm_code.app.api.endpoints.analysisAPI import create_prompt
-from llm_code.pagesOfApp.style.LLMS_Analysis_style import configure_streamlit_theme
+from llm_code.pagesOfApp.style.style import configure_streamlit_theme
 from llm_code.llm_metrics import Metrics, MetricsModel
 from llm_code.app.api.endpoints.analysis_results_Api import create_analysis_result, get_analysis_results
 from evaluate import load
@@ -49,36 +49,36 @@ def get_image_download_link(fig):
     return href
 
 
-# Define an asynchronous function to handle database interaction
-async def handle_database(prompt_text, responses, metric_scores, selected_model):
-    try:
-        # Add analysis results to the database
-        for response, model_name in zip(responses, selected_model):
-            for metric_name, metric_value in metric_scores.items():
-                # Ensure metric_value is a single value, not a list
-                if isinstance(metric_value, list):
-                    metric_value = metric_value[selected_model.index(model_name)]
-
-                data = {
-                    "prompt": prompt_text,
-                    "response": response,
-                    "metric_name": metric_name,
-                    "metric_value": metric_value,
-                    "model_name": model_name
-                }
-                result = await create_analysis_result(data)
-                if result:
-                    st.write("Analysis result stored successfully:")
-                    st.write(result)
-                else:
-                    st.error("Failed to store analysis result. Please check the server logs.")
-    except Exception as e:
-        st.error(f"Error handling database operations: {e}")
-        logging.error(f"Error handling database operations: {e}")
-
-
-def store_analysis_results(prompt_text, responses, metric_scores, selected_model):
-    asyncio.run(handle_database(prompt_text, responses, metric_scores, selected_model))
+# # Define an asynchronous function to handle database interaction
+# async def handle_database(prompt_text, responses, metric_scores, selected_model):
+#     try:
+#         # Add analysis results to the database
+#         for response, model_name in zip(responses, selected_model):
+#             for metric_name, metric_value in metric_scores.items():
+#                 # Ensure metric_value is a single value, not a list
+#                 if isinstance(metric_value, list):
+#                     metric_value = metric_value[selected_model.index(model_name)]
+#
+#                 data = {
+#                     "prompt": prompt_text,
+#                     "response": response,
+#                     "metric_name": metric_name,
+#                     "metric_value": metric_value,
+#                     "model_name": model_name
+#                 }
+#                 result = await create_analysis_result(data)
+#                 if result:
+#                     st.write("Analysis result stored successfully:")
+#                     st.write(result)
+#                 else:
+#                     st.error("Failed to store analysis result. Please check the server logs.")
+#     except Exception as e:
+#         st.error(f"Error handling database operations: {e}")
+#         logging.error(f"Error handling database operations: {e}")
+#
+#
+# def store_analysis_results(prompt_text, responses, metric_scores, selected_model):
+#     asyncio.run(handle_database(prompt_text, responses, metric_scores, selected_model))
 
 
 st.title("LLMS Response Generator and Metrics Analysis")
@@ -96,7 +96,7 @@ if st.button("Generate Response"):
         st.write("Generating Response...")
 
         # Add prompt to database
-        handle_database(prompt_analyze)
+        # handle_database(prompt_analyze)
 
         # Initialize lists to store responses and metric scores
         responses = []
@@ -136,12 +136,12 @@ if st.button("Generate Response"):
 
                     score = np.nan
                 metric_scores[metric].append(score)
-        # Store analysis results in the database
-        store_analysis_results(prompt_analyze, responses, metric_scores, selected_model)
-        # Display generated responses
-        for i, response in enumerate(responses):
-            st.subheader(f"Response from {selected_model[i]}")
-            st.text_area(f"Response {i + 1}", response, height=200)
+        # # Store analysis results in the database
+        # store_analysis_results(prompt_analyze, responses, metric_scores, selected_model)
+        # # Display generated responses
+        # for i, response in enumerate(responses):
+        #     st.subheader(f"Response from {selected_model[i]}")
+        #     st.text_area(f"Response {i + 1}", response, height=200)
 
         # Display metric scores
         st.subheader("Metric Scores:")
