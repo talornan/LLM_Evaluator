@@ -1,47 +1,108 @@
 import re
-import bcrypt
-import asyncio
-import sys
 
-sys.path.append('../..')
+from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy.orm import sessionmaker
+import streamlit as st
+from llm_code.pagesOfApp.style.style import configure_streamlit_theme
+from llm_code.app.api.models.users import users
+from llm_code.app.core.config.db import engine
 
-# Dummy database to store registered users
-registered_users = {}
-
-
-def register(username, email, password):
-    # Check if username or email already exists
-    if username in registered_users:
-        return False, "Username already exists. Please choose a different one."
-    if email in [user['email'] for user in registered_users.values()]:
-        return False, "Email already exists. Please use a different one."
-
-    # Check if email is valid
-    if not re.match(r"[^@]+@[^@]+\.[^@]+", email):
-        return False, "Invalid email address. Please enter a valid email."
-
-    # Check if password is at least 6 characters long and contains uppercase, lowercase, and numbers
-    if len(password) < 6:
-        return False, "Password must be at least 6 characters long."
-    if not re.search(r"\d", password) or not re.search(r"[a-z]", password) or not re.search(r"[A-Z]", password):
-        return False, "Password must contain at least one uppercase letter, one lowercase letter, and one number."
-
-    # Hash the password
-    hashed_password = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
-
-    # Store user information in the database
-    registered_users[username] = {'email': email, 'password': hashed_password}
-    return True, "Registration successful. You can now log in."
+# Create a session
+Session = sessionmaker(bind=engine)
 
 
-def authenticate(username, password):
-    # Check if the username exists
-    if username not in registered_users:
-        return False, "User not found. Please check your username."
+class UserSessionManager:
+    def __init__(self):
+        self.session = Session()
 
-    # Verify the password
-    stored_password = registered_users[username]['password']
-    if bcrypt.checkpw(password.encode('utf-8'), stored_password):
-        return True, "Authentication successful. Welcome back, {}!".format(username)
-    else:
-        return False, "Incorrect password. Please try again."
+    def is_email_in_use(self, email):
+        # Query the database to check if the email exists
+        return self.session.query(users).filter(users.c.email == email).first() is not None
+
+    def is_username_in_use(self, username):
+        # Query the database to check if the username exists
+        return self.session.query(users).filter(users.c.username == username).first() is not None
+
+    # Function to validate email format
+    @staticmethod
+    def validate_email(email):
+        if re.match(r"[^@]+@[^@]+\.[^@]+", email):
+            return True
+        return False
+
+    # Function to check password strength
+    @staticmethod
+    def check_password_strength(password):
+        # Add your password strength criteria here
+        if len(password) < 8:
+            return False
+        return True
+
+
+class AuthenticationManager:
+    def __init__(self):
+        self.user_session_manager = UserSessionManager()
+        self.logged_in_user = None
+
+    def login(self, username, password):
+        # Check if the user is already logged in
+        if self.logged_in_user:
+            return "User is already logged in"
+
+        try:
+            # Query the database for the user with the provided username
+            user = self.user_session_manager.session.query(users).filter_by(username=username).first()
+
+            if user:
+                # If the user exists, check if the password matches
+                if user.password == password:
+                    self.logged_in_user = user
+                    return "Login successful"
+                else:
+                    return "Invalid username or password"
+            else:
+                return "User does not exist"
+        except SQLAlchemyError as e:
+            return "An error occurred while processing your request. Please try again later."
+
+    def logout(self):
+        # Check if the user is logged in
+        if self.logged_in_user:
+            self.logged_in_user = None
+            return "Logout successful"
+        else:
+            return "No user is currently logged in"
+
+    def register_user(self, user_data):
+        try:
+            # Extract username, email, password, and confirm_password from user_data
+            username = user_data.get("username")
+            email = user_data.get("email")
+            password = user_data.get("password")
+            confirm_password = user_data.get("confirm_password")
+
+            # Check if username or email already exists
+            if self.user_session_manager.is_username_in_use(username):
+                return "Username already in use. Please choose a different one."
+            if self.user_session_manager.is_email_in_use(email):
+                return "Email already in use. Please use a different one."
+
+            # Validate email format
+            if not self.user_session_manager.validate_email(email):
+                return "Invalid email format. Please enter a valid email."
+
+            # Check password strength
+            if not self.user_session_manager.check_password_strength(password):
+                return "Password must be at least 8 characters long."
+
+            # Check if password and confirm password match
+            if password != confirm_password:
+                return "Password and confirm password do not match. Please re-enter."
+
+            # Add user to database
+            new_user = users(username=username, email=email, password=password)
+            self.user_session_manager.session.add(new_user)
+            self.user_session_manager.session.commit()
+            return "User registered successfully"
+        except SQLAlchemyError as e:
+            return f"Error registering user: {e}"
