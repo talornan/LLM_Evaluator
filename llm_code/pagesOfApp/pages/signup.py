@@ -1,9 +1,15 @@
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
+import sqlalchemy
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.exc import SQLAlchemyError
 import logging
 import re  # Import regular expression module for email validation
 import asyncio
 import sys
+import sqlite3
+
+from llm_code.app.core.config.db import engine
 
 sys.path.append('../..')
 
@@ -13,6 +19,34 @@ from llm_code.pagesOfApp.style.style import configure_streamlit_theme
 
 st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
 
+# Create a session
+Session = sessionmaker(bind=engine)
+session = Session()
+
+def is_email_in_use(email):
+    # Create a session
+
+    # Query the database to check if the email exists
+    user = session.query(User).filter(User.email == email).first()
+
+    # Close the session
+    session.close()
+
+    # If user is not None, email is in use
+    return user is not None
+
+
+def is_username_in_use(username):
+    # Create a session
+
+    # Query the database to check if the username exists
+    user = session.query(User).filter(User.username == username).first()
+
+    # Close the session
+    session.close()
+
+    # If user is not None, username is in use
+    return user is not None
 
 # Function to validate email format
 def validate_email(email):
@@ -62,6 +96,7 @@ def signup():
     username = st.text_input("Username", placeholder="Enter your username")
     email = st.text_input("Email", placeholder="Enter your email")
     password = st.text_input("Password", type="password", placeholder="Enter your password")
+    confirm_password = st.text_input("Confirm Password", type="password", placeholder="Confirm your password")
     user_type = st.selectbox("User Type", ["prompt_engineer", "model_developer"])
 
     # Signup button
@@ -71,6 +106,10 @@ def signup():
             st.error("Invalid email format. Please enter a valid email address.")
         elif not check_password_strength(password):
             st.error("Password should be at least 8 characters long.")
+        elif is_email_in_use(email):
+            st.error("Email is already in use. Please choose a different email address.")
+        elif is_username_in_use(username):
+            st.error("Username is already in use. Please choose a different username.")
         else:
             add_user(username, email, password, user_type)
             # Button to navigate to login page

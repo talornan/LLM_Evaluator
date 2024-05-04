@@ -5,6 +5,7 @@ from datasets import load_metric
 from transformers import pipeline
 import asyncio
 import sys
+from rouge_score import rouge_scorer, scoring
 
 sys.path.append('../..')
 
@@ -15,9 +16,9 @@ class Metrics:
         self.references = references
 
     def rouge_score(self):
-        # rouge = evaluate.load('rouge')
-        # results = rouge.compute(predictions=self.predictions, references=self.references)
-        # print(f"*****************************************rougu1 score:{results['rouge1']}")
+        rouge = evaluate.load('rouge')
+        results = rouge.compute(predictions=self.predictions, references=self.references)
+        print(f"*****************************************rougu1 score:{results['rouge1']}")
         return 0.2
 
     def bleu_score(self):
@@ -32,6 +33,12 @@ class Metrics:
         print(f"*****************************************exact match score:{results}")
         return results
 
+    def chrf_score(self):
+        chrf = evaluate.load("chrf")
+        results = chrf.compute(predictions=self.predictions, references=self.references)
+        print(f"'chrf': {results}")
+        return results
+
 
 class MetricsModel:
     def __init__(self, predictions, model_type):
@@ -44,11 +51,8 @@ class MetricsModel:
         print(f"Toxicity Scores: {results['toxicity']}")
         return results['toxicity']
 
-    def fluency_score(self):
-        perplexity = load("perplexity", module_type="metric")
-        results = perplexity.compute(predictions=self.predictions, model_id=self.model_type)
-        print(f"Fluency: {results}")
-        return results
+
+
 
 
 def main():
@@ -59,15 +63,12 @@ def main():
     exact = Metrics(predictions="Example 1", references="Example 2")
     exact.exact_match_score()
     input_texts = ["lorem ipsum", "Happy Birthday!", "Bienvenue"]
-    model = MetricsModel(predictions=input_texts, model_type='gpt2')
-    results = model.fluency_score()
-    # print(list(results.keys()))
-    # print(round(results["mean_perplexity"], 2))
-    # print(round(results["perplexities"][0], 2))
+    me = Metrics(predictions="hello there general kenobi", references="hello there general kenobi")
     input_texts = ["she went to the library", "he is a douchebag"]
     model = MetricsModel(predictions=input_texts, model_type='gpt3.5')
     toxicity_scores = model.toxicity_score()
     print(toxicity_scores)
+    me.chrf_score()
 
 
 if __name__ == '__main__':

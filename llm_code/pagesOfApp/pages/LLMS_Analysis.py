@@ -25,7 +25,7 @@ client = OpenAI(api_key="")
 st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
 
 # Define available metrics
-available_metrics = ["Rouge", "exact_match", "Fluency", "Toxicity", "Bleu"]
+available_metrics = ["Rouge", "exact_match", "Mauve", "Toxicity", "Bleu"]
 
 # Define available language models with their corresponding model IDs
 available_models = {
@@ -121,10 +121,10 @@ if st.button("Generate Response"):
                 elif metric == "Bleu":
 
                     score = Metrics(predictions=[response_text], references=[prompt_analyze]).bleu_score()
-                elif metric == "Fluency":
+                elif metric == "Mauve":
 
-                    score = MetricsModel(predictions=[response_text],
-                                         model_type=model_name.lower()).fluency_score()
+                    score = Metrics(predictions=[response_text],
+                                    references=[prompt_analyze]).mauve_score()
                 elif metric == "exact_match":
 
                     score = Metrics(predictions=[response_text], references=[prompt_analyze]).exact_match_score()
@@ -144,6 +144,7 @@ if st.button("Generate Response"):
         #     st.text_area(f"Response {i + 1}", response, height=200)
 
         # Display metric scores
+
         st.subheader("Metric Scores:")
         for metric in selected_metrics:
             st.write(f"{metric}:")
@@ -152,18 +153,24 @@ if st.button("Generate Response"):
 
         # Create grouped bar chart for metrics analysis
         fig, ax = plt.subplots()
-        metrics_labels = list(metric_scores.keys())
-        bar_width = 0.2
         x = np.arange(len(selected_model))
-
-        for i, metric in enumerate(metrics_labels):
+        bar_width = 0.15
+        for i, metric in enumerate(selected_metrics):
             scores = metric_scores[metric]
-            ax.bar(x + i * bar_width, scores, bar_width, label=metric, color=metric_colors[i])
+            # Extract and plot individual components of metric score dictionary
+            component_labels = scores[0].keys()
+            component_indices = np.arange(len(component_labels))
+            for j, component_label in enumerate(component_labels):
+                component_values = [score[component_label] for score in scores]
+                ax.bar(x + (i + j * 0.1) * bar_width, component_values, bar_width / len(scores),
+                       label=f"{metric} - {component_label}", color=metric_colors[j])
 
         ax.set_xlabel('Language Models')
         ax.set_ylabel('Score')
+        ax.set_xlabel('Language Models')
+        ax.set_ylabel('Score')
         ax.set_title('LLMS Metrics Analysis')
-        ax.set_xticks(x + bar_width * (len(metrics_labels) - 1) / 2)
+        ax.set_xticks(x + bar_width * (len(selected_metrics) - 1) / 2)
         ax.set_xticklabels(selected_model)
         ax.legend()
 
