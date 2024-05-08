@@ -1,11 +1,12 @@
 import evaluate
 from evaluate import load
 from datasets import load_metric
+from rouge_score import rouge_scorer, scoring
 
 from transformers import pipeline
 import asyncio
 import sys
-from rouge_score import rouge_scorer, scoring
+
 
 sys.path.append('../..')
 

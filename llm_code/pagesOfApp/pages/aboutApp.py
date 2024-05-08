@@ -1,4 +1,14 @@
 import streamlit as st
+import asyncio
+import sys
+
+sys.path.append('../..')
+from llm_code.pagesOfApp.style.style import configure_streamlit_theme
+from llm_code.pagesOfApp.authentication import AuthenticationManager
+
+st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
+auth_manager = AuthenticationManager()
+
 
 
 def about_page():

@@ -18,6 +18,14 @@ from llm_code.llm_metrics import Metrics, MetricsModel
 from llm_code.app.api.endpoints.analysis_results_Api import create_analysis_result, get_analysis_results
 from evaluate import load
 from datasets import load_metric
+from llm_code.pagesOfApp.style.style import configure_streamlit_theme
+from llm_code.pagesOfApp.authentication import AuthenticationManager
+
+st.set_page_config(page_title="LLMS Analysis", page_icon="📊")
+
+st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
+auth_manager = AuthenticationManager()
+
 
 # Set up your OpenAI API key
 client = OpenAI(api_key="")

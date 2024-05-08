@@ -7,12 +7,15 @@ import sys
 
 sys.path.append('../..')
 from llm_code.pagesOfApp.style.style import configure_streamlit_theme
+from llm_code.pagesOfApp.style.style import configure_streamlit_theme
+from llm_code.pagesOfApp.authentication import AuthenticationManager
+
+st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
+auth_manager = AuthenticationManager()
 
 # Sample data (replace with actual data)
 models = ["Model A", "Model B", "Model C"]
 model_data = {model: np.random.rand(10) for model in models}
-
-st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
 
 
 # Function to calculate aggregated metric
