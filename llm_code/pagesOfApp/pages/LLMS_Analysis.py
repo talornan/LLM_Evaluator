@@ -10,9 +10,6 @@ import base64
 import matplotlib.pyplot as plt
 import sys
 
-from llm_code import state
-from llm_code.schemas.metric_result_schema import MetricResultSchema
-
 sys.path.append('../..')
 from llm_code.app.api.endpoints.analysisAPI import create_prompt
 from llm_code.pagesOfApp.style.style import configure_streamlit_theme
@@ -20,6 +17,8 @@ from llm_code.llm_metrics import Metrics, MetricsModel
 from llm_code.app.api.endpoints.data_analyze_api import insert_metric, get_analysis_results
 from evaluate import load
 from datasets import load_metric
+from llm_code import state
+from llm_code.schemas.metric_result_schema import MetricResultSchema
 
 # Set up your OpenAI API key
 client = OpenAI(api_key="")

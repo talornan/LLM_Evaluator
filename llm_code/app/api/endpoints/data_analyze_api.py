@@ -67,7 +67,7 @@ logging.basicConfig(level=logging.DEBUG)
 #         raise HTTPException(status_code=500, detail="Internal server error")
 #
 
-@app.post("/api/analysis_result_omer", response_model=List[AggResponse])
+@app.post("/api/analysis_result", response_model=List[AggResponse])
 async def get_analysis_results(agg_request: AggRequest):
     try:
         stmt = (
