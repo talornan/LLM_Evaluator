@@ -1,11 +1,11 @@
 setup Environment:
 
 Create a virtual environment using Python:
-1. python -m venv venv
+1. python -m venv venv1
 
 Activate the virtual environment:
 2. source venv/bin/activate # For Unix-based OS
-        .\venv\Scripts\activate # For Windows
+        .\venv1\Scripts\activate # For Windows
 
 Install the requirements:
 3. pip install -r requirements.txt

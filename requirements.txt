@@ -18,3 +18,4 @@ scikit-learn==1.4.2
 rouge-score==0.1.2
 transformers==4.40.2
 streamlit_extras
+sacrebleu

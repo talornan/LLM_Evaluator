@@ -5,6 +5,7 @@ from streamlit_extras.colored_header import colored_header
 import asyncio
 import sys
 
+
 sys.path.append('..')
 sys.path.append('../..')
 sys.path.append('../../..')
@@ -13,6 +14,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
 from style.style import configure_streamlit_theme
+from llm_code import state
 
 st.set_page_config(initial_sidebar_state = "collapsed")
 def home():
@@ -24,6 +26,8 @@ def home():
     st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
     st.image('logo/logo2.png', width=150)
     st.title('Welcome to LLM Evaluator')
+    if state.is_connected():
+        st.title("User - " + state.get_user_name())
     st.write('This app helps you evaluate your LLM (Language Model) based on various criteria.')
 
     # Create a row for the buttons

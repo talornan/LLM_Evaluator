@@ -1,4 +1,4 @@
-from sqlalchemy import Table, Column, Integer, String, Enum, Float
+from sqlalchemy import Table, Column, Integer, String, Enum, Float, Text
 import asyncio
 import sys
 
@@ -10,10 +10,8 @@ metric_result = Table(
     Column('username', String(100), primary_key=True),
     Column('metric_name', String(100), nullable=False),
     Column('prompt', String(100), nullable=False),
-    Column('prompt_generation', Enum('prompt_engineer', 'model_developer', name='user_types'), nullable=False),
+    Column('prompt_generation', Text, nullable=False),
     Column('metric_value', Float, nullable=False),
     Column('model_id', String(100), nullable=False)
 
 )
-
-

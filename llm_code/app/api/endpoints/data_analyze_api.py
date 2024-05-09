@@ -80,16 +80,16 @@ async def get_analysis_results(agg_request: AggRequest):
                 func.sum(metric_result.metric_result.c.metric_value).label('total'),
                 func.count(metric_result.metric_result.c.metric_value).label('count')
             ).
-            where(
+                where(
                 (metric_result.metric_result.c.model_id.in_(agg_request.model_ids)) &
                 (metric_result.metric_result.c.metric_name.in_(agg_request.metrics_name))
             ).
-            group_by(metric_result.metric_result.c.model_id,
-                     metric_result.metric_result.c.metric_name)
+                group_by(metric_result.metric_result.c.model_id,
+                         metric_result.metric_result.c.metric_name)
         )
         result = con.execute(stmt)
 
-        rows =  result.fetchall()
+        rows = result.fetchall()
         response_list = []
         for row in rows:
             response_list.append(AggResponse(
@@ -110,34 +110,35 @@ async def get_analysis_results(agg_request: AggRequest):
 @app.post("/insert_metric_result")
 async def insert_metric(metric_result_schema: MetricResultSchema):
     try:
-        data = await con.execute(metric_result.metric_result.insert().values(
-            username = metric_result_schema.username,
-            metric_name = metric_result_schema.metric_name,
-            prompt = metric_result_schema.prompt,
-            prompt_generation = metric_result_schema.prompt_generation,
-            metric_value = metric_result_schema.metric_value,
-            model_id = metric_result_schema.model_id
-
-
+        # Execute the insertion query
+        data = con.execute(metric_result.metric_result.insert().values(
+            username=metric_result_schema.username,
+            metric_name=metric_result_schema.metric_name,
+            prompt=metric_result_schema.prompt,
+            prompt_generation=metric_result_schema.prompt_generation,
+            metric_value=metric_result_schema.metric_value,
+            model_id=metric_result_schema.model_id
         ))
 
-        result = con.commit()  # Commit the transaction after insertion
-        rows = await result.fetchall()
+        # Commit the transaction after insertion
+        con.commit()
 
+        # Check if the insertion was successful
         if data.rowcount == 1:
             # Return a response with the inserted user details
             return {
-                "success": "true",
+                "success": True,
                 "msg": "Metric created successfully"
             }
         else:
             # If insertion failed, raise an error response
-            raise HTTPException(status_code=500, detail="Failed to create user")
+            raise HTTPException(status_code=500, detail="Failed to create metric")
     except SQLAlchemyError as e:
         # Log the error message
         logging.error(f"Error creating Metric: {e}")
         # Return an error response
         raise HTTPException(status_code=500, detail="Internal server error")
+
 
 if __name__ == "__main__":
     uvicorn.run(app, host="0.0.0.0", port=8001)

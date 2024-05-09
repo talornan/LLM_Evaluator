@@ -52,6 +52,7 @@ def get_image_download_link(fig):
 
 
 st.title("LLMS Response Generator and Metrics Analysis")
+st.title("User - " + state.get_user_name())
 
 # User input section for analysis
 prompt_analyze = st.text_input("Enter Prompt to Analyze", placeholder="Enter your prompt here...")
@@ -88,6 +89,7 @@ if st.button("Generate Response"):
                 if metric == "Rouge":
 
                     score = Metrics(predictions=[response_text], references=[prompt_analyze]).rouge_score()
+
                 elif metric == "Bleu":
 
                     score = Metrics(predictions=[response_text], references=[prompt_analyze]).bleu_score()
@@ -105,6 +107,8 @@ if st.button("Generate Response"):
                 else:
                     score = np.nan
 
+                print(f'*****************{metric} : {score}*****************')
+                metric_scores[metric].append(score)
                 import requests
 
                 user = MetricResultSchema(username=state.get_user_name(),
@@ -114,29 +118,28 @@ if st.button("Generate Response"):
                                           metric_value=score,
                                           model_id=model_id)
 
-            requests.post("http://localhost:8001/insert_metric_result", json=user.dict())
-
-            metric_scores[metric].append(score)
+                requests.post("http://localhost:8001/insert_metric_result", json=user.dict())
 
         st.subheader("LLMS Responses:")
         for i, (model_name, response) in enumerate(zip(selected_model, responses)):
             st.write(f"{model_name} Response:")
             st.info(response)
 
-        # Display metric scores
+        # Display metric scores in a table
         st.subheader("Metric Scores:")
-        for metric in selected_metrics:
-            st.write(f"{metric}:")
-            for i, score in enumerate(metric_scores[metric]):
-                st.write(f"  - {selected_model[i]}: {score}")
+        metric_table_data = {"Metric": selected_metrics}
+        for model_name in selected_model:
+            metric_table_data[model_name] = [metric_scores[metric][selected_model.index(model_name)] for metric in
+                                             selected_metrics]
+        st.table(metric_table_data)
 
         # Create grouped bar chart for metrics analysis
         fig, ax = plt.subplots()
         x = np.arange(len(selected_metrics))
         bar_width = 0.15
 
-        for i, (model_name, metric_scores) in enumerate(zip(selected_model, metric_scores.values())):
-            scores = [scores[i] for scores in metric_scores]
+        for i, model_name in enumerate(selected_model):
+            scores = [metric_scores[metric][i] for metric in selected_metrics]
             ax.bar(x + i * bar_width, scores, bar_width, label=model_name, color=metric_colors[i])
 
         ax.set_xlabel('Metrics')

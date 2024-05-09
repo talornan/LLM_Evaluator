@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 import asyncio
 import sys
 
+from llm_code import state
+
 sys.path.append('../..')
 from llm_code.pagesOfApp.style.style import configure_streamlit_theme
 from llm_code.pagesOfApp.style.style import configure_streamlit_theme
@@ -89,6 +91,7 @@ custom_css = """
 st.markdown(custom_css, unsafe_allow_html=True)  # Apply custom CSS
 
 st.title("Model Evaluation")
+st.title("User - " + state.get_user_name())
 
 
 selected_models = st.multiselect("Select Models", models)

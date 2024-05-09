@@ -15,10 +15,10 @@ class Analysis_Result(BaseModel):
     model_name: str
 
 
-
 class AggRequest(BaseModel):
     model_ids: List[str]
     metrics_name: List[str]
+
 
 class AggResponse(BaseModel):
     model_id: str
@@ -28,4 +28,3 @@ class AggResponse(BaseModel):
     minimum: float
     total: float
     count: float
-
