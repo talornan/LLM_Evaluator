@@ -22,7 +22,7 @@ def home():
     text_color = "#800080"
 
     st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
-    st.image('llm_code/logo/logo2.png', width=150)
+    st.image('logo/logo2.png', width=150)
     st.title('Welcome to LLM Evaluator')
     st.write('This app helps you evaluate your LLM (Language Model) based on various criteria.')
 
