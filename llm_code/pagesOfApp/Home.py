@@ -6,10 +6,15 @@ import asyncio
 import sys
 
 sys.path.append('..')
+sys.path.append('../..')
+sys.path.append('../../..')
+sys.path.append('../../../..')
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 
-from llm_code.pagesOfApp.style.style import configure_streamlit_theme
+from style.style import configure_streamlit_theme
 
-
+st.set_page_config(initial_sidebar_state = "collapsed")
 def home():
     # Define colors
     background_color = "#f0f0f0"
@@ -17,7 +22,7 @@ def home():
     text_color = "#800080"
 
     st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
-    st.image('logo/logo2.png', width=150)
+    st.image('llm_code/logo/logo2.png', width=150)
     st.title('Welcome to LLM Evaluator')
     st.write('This app helps you evaluate your LLM (Language Model) based on various criteria.')
 

@@ -3,9 +3,12 @@ import re
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 import streamlit as st
+
+from llm_code import state
 from llm_code.pagesOfApp.style.style import configure_streamlit_theme
 from llm_code.app.api.models.users import users
 from llm_code.app.core.config.db import engine
+from llm_code.schemas.user import User
 
 # Create a session
 Session = sessionmaker(bind=engine)
@@ -80,6 +83,12 @@ class AuthenticationManager:
             email = user_data.get("email")
             password = user_data.get("password")
             confirm_password = user_data.get("confirm_password")
+            user_type = user_data.get("user_type")
+
+            print("user_name" + username)
+            print("email" + email)
+            print("password" + username)
+            print("confirm_password" + confirm_password)
 
             # Check if username or email already exists
             if self.user_session_manager.is_username_in_use(username):
@@ -97,12 +106,18 @@ class AuthenticationManager:
 
             # Check if password and confirm password match
             if password != confirm_password:
+                print(password)
+                print(confirm_password)
                 return "Password and confirm password do not match. Please re-enter."
 
             # Add user to database
-            new_user = users(username=username, email=email, password=password)
-            self.user_session_manager.session.add(new_user)
-            self.user_session_manager.session.commit()
+            import requests
+            user = User(username=username, password=password, user_type=user_type, email=email)
+
+            requests.post("http://localhost:8000/api/user", json = user.dict())
+
+            state.state_connect(username)
+
             return "User registered successfully"
         except SQLAlchemyError as e:
             return f"Error registering user: {e}"

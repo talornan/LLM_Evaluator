@@ -9,6 +9,14 @@ from sqlalchemy.orm import sessionmaker
 from llm_code.app.api.models.users import users
 from llm_code.app.core.config.db import engine
 
+
+sys.path.append('..')
+sys.path.append('../..')
+sys.path.append('../../..')
+sys.path.append('../../../..')
+sys.path.append('.')
+sys.path.append('../../../../..')
+
 sys.path.append('../..')
 
 from llm_code.schemas.user import User
@@ -67,6 +75,7 @@ def signup():
             "username": username,
             "email": email,
             "password": password,
+            "confirm_password": confirm_password,
             "user_type": user_type
         }
         result = auth_manager.register_user(user_data)

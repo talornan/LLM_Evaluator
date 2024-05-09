@@ -18,7 +18,7 @@ app = FastAPI()
 logging.basicConfig(level=logging.DEBUG)
 
 
-@app.post("/api/user", response_model=User)
+@app.post("/api/user", response_model=dict[str,str])
 async def create_user(user_input: User):
     try:
 
@@ -35,11 +35,11 @@ async def create_user(user_input: User):
         if data.rowcount == 1:
             # Return a response with the inserted user details
             return {
-                "user_id": data.inserted_primary_key[0],
-                "username": user_input.username,
-                "password": user_input.password,
-                "user_type": user_input.user_type,
-                "success": True,
+                # "user_id": data.inserted_primary_key[0],
+                # "username": user_input.username,
+                # "password": user_input.password,
+                # "user_type": user_input.user_type,
+                "success": "true",
                 "msg": "User created successfully"
             }
         else:

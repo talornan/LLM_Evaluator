@@ -6,6 +6,8 @@ import sys
 
 from sqlalchemy.sql.functions import user
 
+from llm_code import state
+
 sys.path.append('../..')
 # Import necessary modules from your project
 from llm_code.app.api.models.users import users  # Assuming users model is imported correctly
@@ -30,6 +32,7 @@ def login():
 
         if login_result == "Login successful":
             st.sidebar.write(f"Hello, {username}!")
+            state.state_connect(username)
             st.success("Login successful!")
             st.balloons()
             st.write(f"Welcome, {username}!")

@@ -10,22 +10,16 @@ import base64
 import matplotlib.pyplot as plt
 import sys
 
+from llm_code import state
+from llm_code.schemas.metric_result_schema import MetricResultSchema
 
 sys.path.append('../..')
 from llm_code.app.api.endpoints.analysisAPI import create_prompt
 from llm_code.pagesOfApp.style.style import configure_streamlit_theme
 from llm_code.llm_metrics import Metrics, MetricsModel
-from llm_code.app.api.endpoints.analysis_results_Api import create_analysis_result, get_analysis_results
+from llm_code.app.api.endpoints.data_analyze_api import insert_metric, get_analysis_results
 from evaluate import load
 from datasets import load_metric
-from llm_code.pagesOfApp.style.style import configure_streamlit_theme
-from llm_code.pagesOfApp.authentication import AuthenticationManager
-
-st.set_page_config(page_title="LLMS Analysis", page_icon="📊")
-
-st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
-auth_manager = AuthenticationManager()
-
 
 # Set up your OpenAI API key
 client = OpenAI(api_key="")
@@ -33,7 +27,7 @@ client = OpenAI(api_key="")
 st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
 
 # Define available metrics
-available_metrics = ["Rouge", "exact_match", "Mauve", "Toxicity", "Bleu"]
+available_metrics = ["Rouge", "exact_match", "Chrf", "Toxicity", "Bleu"]
 
 # Define available language models with their corresponding model IDs
 available_models = {
@@ -55,38 +49,6 @@ def get_image_download_link(fig):
     b64 = base64.b64encode(data).decode()
     href = f'<a href="data:file/png;base64,{b64}" download="grouped_bar_chart.png">Download Grouped Bar Chart</a>'
     return href
-
-
-# # Define an asynchronous function to handle database interaction
-# async def handle_database(prompt_text, responses, metric_scores, selected_model):
-#     try:
-#         # Add analysis results to the database
-#         for response, model_name in zip(responses, selected_model):
-#             for metric_name, metric_value in metric_scores.items():
-#                 # Ensure metric_value is a single value, not a list
-#                 if isinstance(metric_value, list):
-#                     metric_value = metric_value[selected_model.index(model_name)]
-#
-#                 data = {
-#                     "prompt": prompt_text,
-#                     "response": response,
-#                     "metric_name": metric_name,
-#                     "metric_value": metric_value,
-#                     "model_name": model_name
-#                 }
-#                 result = await create_analysis_result(data)
-#                 if result:
-#                     st.write("Analysis result stored successfully:")
-#                     st.write(result)
-#                 else:
-#                     st.error("Failed to store analysis result. Please check the server logs.")
-#     except Exception as e:
-#         st.error(f"Error handling database operations: {e}")
-#         logging.error(f"Error handling database operations: {e}")
-#
-#
-# def store_analysis_results(prompt_text, responses, metric_scores, selected_model):
-#     asyncio.run(handle_database(prompt_text, responses, metric_scores, selected_model))
 
 
 st.title("LLMS Response Generator and Metrics Analysis")
@@ -129,10 +91,10 @@ if st.button("Generate Response"):
                 elif metric == "Bleu":
 
                     score = Metrics(predictions=[response_text], references=[prompt_analyze]).bleu_score()
-                elif metric == "Mauve":
+                elif metric == "Chrf":
 
                     score = Metrics(predictions=[response_text],
-                                    references=[prompt_analyze]).mauve_score()
+                                    references=[prompt_analyze]).chrf_score()
                 elif metric == "exact_match":
 
                     score = Metrics(predictions=[response_text], references=[prompt_analyze]).exact_match_score()
@@ -141,18 +103,27 @@ if st.button("Generate Response"):
                     score = MetricsModel(predictions=[response_text],
                                          model_type=model_name.lower()).toxicity_score()
                 else:
-
                     score = np.nan
-                metric_scores[metric].append(score)
-        # # Store analysis results in the database
-        # store_analysis_results(prompt_analyze, responses, metric_scores, selected_model)
-        # # Display generated responses
-        # for i, response in enumerate(responses):
-        #     st.subheader(f"Response from {selected_model[i]}")
-        #     st.text_area(f"Response {i + 1}", response, height=200)
+
+                import requests
+
+                user = MetricResultSchema(username=state.get_user_name(),
+                                          metric_name=metric,
+                                          prompt=prompt_analyze,
+                                          prompt_generation=response_text,
+                                          metric_value=score,
+                                          model_id=model_id)
+
+            requests.post("http://localhost:8001/insert_metric_result", json=user.dict())
+
+            metric_scores[metric].append(score)
+
+        st.subheader("LLMS Responses:")
+        for i, (model_name, response) in enumerate(zip(selected_model, responses)):
+            st.write(f"{model_name} Response:")
+            st.info(response)
 
         # Display metric scores
-
         st.subheader("Metric Scores:")
         for metric in selected_metrics:
             st.write(f"{metric}:")
@@ -161,25 +132,18 @@ if st.button("Generate Response"):
 
         # Create grouped bar chart for metrics analysis
         fig, ax = plt.subplots()
-        x = np.arange(len(selected_model))
+        x = np.arange(len(selected_metrics))
         bar_width = 0.15
-        for i, metric in enumerate(selected_metrics):
-            scores = metric_scores[metric]
-            # Extract and plot individual components of metric score dictionary
-            component_labels = scores[0].keys()
-            component_indices = np.arange(len(component_labels))
-            for j, component_label in enumerate(component_labels):
-                component_values = [score[component_label] for score in scores]
-                ax.bar(x + (i + j * 0.1) * bar_width, component_values, bar_width / len(scores),
-                       label=f"{metric} - {component_label}", color=metric_colors[j])
 
-        ax.set_xlabel('Language Models')
-        ax.set_ylabel('Score')
-        ax.set_xlabel('Language Models')
+        for i, (model_name, metric_scores) in enumerate(zip(selected_model, metric_scores.values())):
+            scores = [scores[i] for scores in metric_scores]
+            ax.bar(x + i * bar_width, scores, bar_width, label=model_name, color=metric_colors[i])
+
+        ax.set_xlabel('Metrics')
         ax.set_ylabel('Score')
         ax.set_title('LLMS Metrics Analysis')
-        ax.set_xticks(x + bar_width * (len(selected_metrics) - 1) / 2)
-        ax.set_xticklabels(selected_model)
+        ax.set_xticks(x + (len(selected_model) * bar_width) / 2)
+        ax.set_xticklabels(selected_metrics)
         ax.legend()
 
         # Show the plot

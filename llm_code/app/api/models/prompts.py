@@ -8,8 +8,7 @@ sys.path.append('../..')
 from llm_code.app.core.config.db import meta
 
 prompts = Table(
-    'Prompts', meta,
+    'prompts', meta,
     Column('prompt_id', Integer, primary_key=True),
     Column('prompt_text', Text, nullable=False)
 )
-

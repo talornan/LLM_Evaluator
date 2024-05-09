@@ -1,12 +1,11 @@
 import evaluate
 from evaluate import load
 from datasets import load_metric
-from rouge_score import rouge_scorer, scoring
 
 from transformers import pipeline
 import asyncio
 import sys
-
+from rouge_score import rouge_scorer, scoring
 
 sys.path.append('../..')
 
@@ -20,25 +19,25 @@ class Metrics:
         rouge = evaluate.load('rouge')
         results = rouge.compute(predictions=self.predictions, references=self.references)
         print(f"*****************************************rougu1 score:{results['rouge1']}")
-        return 0.2
+        return results['rouge1']
 
     def bleu_score(self):
         bleu = evaluate.load("bleu")
         results = bleu.compute(predictions=self.predictions, references=self.references)
-        print(f"*****************************************bleu score:{results}")
-        return results
+        print(f"*****************************************bleu score:{results['bleu']}")
+        return results["bleu"]
 
     def exact_match_score(self):
         exact_match_metric = load("exact_match")
         results = exact_match_metric.compute(predictions=self.predictions, references=self.references)
-        print(f"*****************************************exact match score:{results}")
-        return results
+        print(f"*****************************************exact match score:{results['exact_match']}")
+        return results['exact_match']
 
     def chrf_score(self):
         chrf = evaluate.load("chrf")
         results = chrf.compute(predictions=self.predictions, references=self.references)
-        print(f"'chrf': {results}")
-        return results
+        print(f"'chrf': {results['score']}")
+        return results['score']
 
 
 class MetricsModel:
@@ -49,8 +48,8 @@ class MetricsModel:
     def toxicity_score(self):
         toxicity = load("toxicity", module_type="measurement")
         results = toxicity.compute(predictions=self.predictions)
-        print(f"Toxicity Scores: {results['toxicity']}")
-        return results['toxicity']
+        print(f"Toxicity Scores: {results['toxicity'][0]}")
+        return results['toxicity'][0]
 
 
 
