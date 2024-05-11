@@ -10,6 +10,8 @@ import base64
 import matplotlib.pyplot as plt
 import sys
 
+
+
 sys.path.append('../..')
 from llm_code.app.api.endpoints.analysisAPI import create_prompt
 from llm_code.pagesOfApp.style.style import configure_streamlit_theme
@@ -19,51 +21,84 @@ from evaluate import load
 from datasets import load_metric
 from llm_code import state
 from llm_code.schemas.metric_result_schema import MetricResultSchema
+from llm_code.pagesOfApp.pages.login import logout
+from llm_code.pagesOfApp.style.homeStyle import configure_home_theme
 
-# Set up your OpenAI API key
 client = OpenAI(api_key="")
+# Set Streamlit page configuration
+st.set_page_config(initial_sidebar_state="collapsed")
 
+# Apply Streamlit theme
 st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
 
-# Define available metrics
-available_metrics = ["Rouge", "exact_match", "Chrf", "Toxicity", "Bleu"]
+if not state.is_connected():
+    st.markdown(
+        """
+    <style>
+        [data-testid="collapsedControl"] {
+            display: none
+        }
+    </style>
+    """,
+        unsafe_allow_html=True,
+    )
+    st.title("No user is currently logged in "
+             "Please select an option")
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.page_link("Home.py", label="home", icon="🏠")
+    with col2:
+        st.page_link("pages/login.py", label=None, icon=None)
+    with col3:
+        st.page_link("pages/signup.py", label=None, icon=None)
+else:
+    # Define colors
+    background_color = "#f0f0f0"
+    title_color = "#ff69b4"
+    text_color = "#800080"
 
-# Define available language models with their corresponding model IDs
-available_models = {
-    "GPT-4 Turbo": "gpt-4-turbo",
-    "GPT-3.5 Turbo": "gpt-3.5-turbo",
-}
-
-# Define colors for language models and metrics
-model_colors = ['#FF69B4', '#9370DB']  # Pink, Purple
-metric_colors = ['#ADD8E6', '#FFD700', '#00FF00', '#00FFFF']  # Light Blue, Gold, Green, Cyan
+    st.markdown('<div class="welcome-message">Hello ' + state.get_user_name() + '</div>', unsafe_allow_html=True)
+    st.page_link("Home.py", label="home", icon="🏠")
 
 
-# Function to generate a download link for the bar chart
-def get_image_download_link(fig):
-    """Generates a download link for the bar chart as a PNG image."""
-    fig.savefig("grouped_bar_chart.png", bbox_inches='tight', pad_inches=0.2)
-    with open("grouped_bar_chart.png", "rb") as f:
-        data = f.read()
-    b64 = base64.b64encode(data).decode()
-    href = f'<a href="data:file/png;base64,{b64}" download="grouped_bar_chart.png">Download Grouped Bar Chart</a>'
-    return href
+    # Define available metrics
+    available_metrics = ["Rouge", "exact_match", "Chrf", "Toxicity", "Bleu"]
 
+    # Define available language models with their corresponding model IDs
+    available_models = {
+        "GPT-4 Turbo": "gpt-4-turbo",
+        "GPT-3.5 Turbo": "gpt-3.5-turbo",
+    }
 
-st.title("LLMS Response Generator and Metrics Analysis")
-st.title("User - " + state.get_user_name())
+    # Define colors for language models and metrics
+    model_colors = ['#FF69B4', '#9370DB']  # Pink, Purple
+    metric_colors = ['#ADD8E6', '#FFD700', '#00FF00', '#00FFFF']  # Light Blue, Gold, Green, Cyan
 
-# User input section for analysis
-prompt_analyze = st.text_input("Enter Prompt to Analyze", placeholder="Enter your prompt here...")
-selected_model = st.multiselect("Select Language Model", available_models)
-selected_metrics = st.multiselect("Select Metrics", available_metrics)
+    # Function to generate a download link for the bar chart
+    def get_image_download_link(fig):
+        """Generates a download link for the bar chart as a PNG image."""
+        fig.savefig("grouped_bar_chart.png", bbox_inches='tight', pad_inches=0.2)
+        with open("grouped_bar_chart.png", "rb") as f:
+            data = f.read()
+        b64 = base64.b64encode(data).decode()
+        href = f'<a href="data:file/png;base64,{b64}" download="grouped_bar_chart.png">Download Grouped Bar Chart</a>'
+        return href
 
-# Generate response button for analysis
-if st.button("Generate Response"):
-    if not prompt_analyze:
-        st.warning("Please enter a prompt to analyze.")
-    else:
-        st.write("Generating Response...")
+    st.title("LLMS Response Generator and Metrics Analysis")
+
+    # User input section for analysis
+    prompt_analyze = st.text_input("Enter Prompt to Analyze", placeholder="Enter your prompt here...")
+    selected_model = st.multiselect("Select Language Model", available_models)
+    selected_metrics = st.multiselect("Select Metrics", available_metrics)
+
+    logout()
+
+    # Generate response button for analysis
+    if st.button("Generate Response"):
+        if not prompt_analyze:
+            st.warning("Please enter a prompt to analyze.")
+        else:
+            st.write("Generating Response...")
 
         # Add prompt to database
         # handle_database(prompt_analyze)
@@ -154,3 +189,5 @@ if st.button("Generate Response"):
         # Download button for the generated graph
         st.subheader("Download Graph")
         st.markdown(get_image_download_link(fig), unsafe_allow_html=True)
+
+

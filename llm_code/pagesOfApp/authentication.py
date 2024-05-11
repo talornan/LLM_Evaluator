@@ -72,6 +72,7 @@ class AuthenticationManager:
         # Check if the user is logged in
         if self.logged_in_user:
             self.logged_in_user = None
+            st.experimental_rerun()
             return "Logout successful"
         else:
             return "No user is currently logged in"
@@ -114,7 +115,7 @@ class AuthenticationManager:
             import requests
             user = User(username=username, password=password, user_type=user_type, email=email)
 
-            requests.post("http://localhost:8000/api/user", json = user.dict())
+            requests.post("http://localhost:8000/api/user", json=user.dict())
 
             state.state_connect(username)
 

@@ -1,48 +1,58 @@
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
-from streamlit_extras.app_logo import add_logo
-from streamlit_extras.colored_header import colored_header
-import asyncio
-import sys
-
-
-sys.path.append('..')
-sys.path.append('../..')
-sys.path.append('../../..')
-sys.path.append('../../../..')
-import os
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
-
-from style.style import configure_streamlit_theme
 from llm_code import state
+from llm_code.pagesOfApp.authentication import AuthenticationManager
+from llm_code.pagesOfApp.style.homeStyle import configure_home_theme
 
-st.set_page_config(initial_sidebar_state = "collapsed")
+auth_manager = AuthenticationManager()
+
+
 def home():
-    # Define colors
-    background_color = "#f0f0f0"
-    title_color = "#ff69b4"
-    text_color = "#800080"
+    st.set_page_config(initial_sidebar_state="collapsed", layout="wide")
 
-    st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
-    st.image('logo/logo2.png', width=150)
-    st.title('Welcome to LLM Evaluator')
+    # Apply custom style from homeStyle.py
+    st.markdown(configure_home_theme(), unsafe_allow_html=True)
+
     if state.is_connected():
-        st.title("User - " + state.get_user_name())
-    st.write('This app helps you evaluate your LLM (Language Model) based on various criteria.')
+        st.markdown('<div class="welcome-message">Hello ' + state.get_user_name() + '</div>', unsafe_allow_html=True)
+    else:
+        st.markdown('<div class="greeting-message">Hello guest</div>', unsafe_allow_html=True)
 
-    # Create a row for the buttons
-    col1, col2, col3 = st.columns(3)
+    # st.image('logo/logo2.png', width=150)
 
-    with col1:
-        if st.button("Login", key="login_button"):
-            switch_page("login")
+    # Welcome message with applied styles
+    st.markdown(
+        """
+        <div class="main-content">
+            <h1>Welcome to the LLM Evaluator</h1>
+            <p class="text-color-adjusted" style="font-size: 24px;">Unleash the power of language models and explore their potential with our interactive tool!</p>
+            <p class="text-color-adjusted" style="font-size: 24px;">Discover insights, analyze performance, and dive deep into the world of natural language understanding.</p>
+        </div>
+        """,
+        unsafe_allow_html=True
+    )
 
-    with col2:
-        if st.button("Signup", key="signup_button"):
-            switch_page("signup")
-    with col3:
-        if st.button("About the app", key="about_button"):
-            switch_page("aboutApp")
+    # Center-align all columns
+    st.markdown('<div style="display: flex; justify-content: center;">', unsafe_allow_html=True)
+
+    # Create a container for the buttons
+    with st.container():
+        # Create a row for the buttons
+        col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
+
+        with col3:
+            if st.button("Login", key="login_button"):
+                switch_page("login")
+
+        with col4:
+            if st.button("Signup", key="signup_button"):
+                switch_page("signup")
+
+        with col5:
+            if st.button("About the app", key="about_button"):
+                switch_page("aboutApp")
+
+    st.markdown('</div>', unsafe_allow_html=True)  # Close center-aligning container
 
 
 home()

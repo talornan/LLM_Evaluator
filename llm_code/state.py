@@ -1,13 +1,16 @@
 
 import streamlit as st
 
-st.session_state["is_connected"] =False
-
+if "is_connected" not in st.session_state:
+    st.session_state["is_connected"] = False
+if "username" not in st.session_state:
+    st.session_state["username"] = None
 
 
 def state_connect(username):
     st.session_state["is_connected"] = True
     st.session_state["username"] = username
+
 
 def is_connected():
     if 'is_connected' in st.session_state:
