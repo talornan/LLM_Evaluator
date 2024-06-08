@@ -1,5 +1,10 @@
 
 import streamlit as st
+import sys
+
+
+
+sys.path.append('../..')
 
 if "is_connected" not in st.session_state:
     st.session_state["is_connected"] = False

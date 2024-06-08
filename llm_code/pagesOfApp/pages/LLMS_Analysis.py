@@ -10,8 +10,6 @@ import base64
 import matplotlib.pyplot as plt
 import sys
 
-
-
 sys.path.append('../..')
 from llm_code.app.api.endpoints.analysisAPI import create_prompt
 from llm_code.pagesOfApp.style.style import configure_streamlit_theme
@@ -24,12 +22,14 @@ from llm_code.schemas.metric_result_schema import MetricResultSchema
 from llm_code.pagesOfApp.pages.login import logout
 from llm_code.pagesOfApp.style.homeStyle import configure_home_theme
 
+st.set_page_config(initial_sidebar_state="collapsed")
+
 client = OpenAI(api_key="")
 # Set Streamlit page configuration
-st.set_page_config(initial_sidebar_state="collapsed")
 
 # Apply Streamlit theme
 st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
+
 
 if not state.is_connected():
     st.markdown(
@@ -44,6 +44,8 @@ if not state.is_connected():
     )
     st.title("No user is currently logged in "
              "Please select an option")
+
+
     col1, col2, col3 = st.columns(3)
     with col1:
         st.page_link("Home.py", label="home", icon="🏠")
@@ -60,7 +62,6 @@ else:
     st.markdown('<div class="welcome-message">Hello ' + state.get_user_name() + '</div>', unsafe_allow_html=True)
     st.page_link("Home.py", label="home", icon="🏠")
 
-
     # Define available metrics
     available_metrics = ["Rouge", "exact_match", "Chrf", "Toxicity", "Bleu"]
 
@@ -74,6 +75,7 @@ else:
     model_colors = ['#FF69B4', '#9370DB']  # Pink, Purple
     metric_colors = ['#ADD8E6', '#FFD700', '#00FF00', '#00FFFF']  # Light Blue, Gold, Green, Cyan
 
+
     # Function to generate a download link for the bar chart
     def get_image_download_link(fig):
         """Generates a download link for the bar chart as a PNG image."""
@@ -83,6 +85,7 @@ else:
         b64 = base64.b64encode(data).decode()
         href = f'<a href="data:file/png;base64,{b64}" download="grouped_bar_chart.png">Download Grouped Bar Chart</a>'
         return href
+
 
     st.title("LLMS Response Generator and Metrics Analysis")
 
@@ -189,5 +192,3 @@ else:
         # Download button for the generated graph
         st.subheader("Download Graph")
         st.markdown(get_image_download_link(fig), unsafe_allow_html=True)
-
-

@@ -1,5 +1,12 @@
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
+import sys
+sys.path.append('..')
+sys.path.append('../..')
+sys.path.append('../../..')
+sys.path.append('../../../..')
+import os
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')))
 from llm_code import state
 from llm_code.pagesOfApp.authentication import AuthenticationManager
 from llm_code.pagesOfApp.style.homeStyle import configure_home_theme
@@ -18,7 +25,7 @@ def home():
     else:
         st.markdown('<div class="greeting-message">Hello guest</div>', unsafe_allow_html=True)
 
-    # st.image('logo/logo2.png', width=150)
+    # st.image('llm_code/logo/newlogo.jpeg', width=150)
 
     # Welcome message with applied styles
     st.markdown(

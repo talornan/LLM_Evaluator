@@ -5,8 +5,13 @@ import sys
 
 sys.path.append('../..')
 
+username = 'shaya'
+password = '12235Tal'
+host = 'llm.mysql.database.azure.com'
+database = 'LLM_Evaluator'
+
 # Define the database connection
-engine = create_engine('mysql+pymysql://root:12235tal@localhost:3306/LLM_Evaluator')
+engine = create_engine(f'mysql+pymysql://{username}:{password}@{host}:3306/{database}')
 meta = MetaData()
 
 try:

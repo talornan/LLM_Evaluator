@@ -3,7 +3,11 @@ import re
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import sessionmaker
 import streamlit as st
+import sys
 
+
+
+sys.path.append('../..')
 from llm_code import state
 from llm_code.pagesOfApp.style.style import configure_streamlit_theme
 from llm_code.app.api.models.users import users
