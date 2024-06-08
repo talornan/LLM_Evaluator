@@ -5,8 +5,6 @@ from sqlalchemy.orm import sessionmaker
 import streamlit as st
 import sys
 
-
-
 sys.path.append('../..')
 from llm_code import state
 from llm_code.pagesOfApp.style.style import configure_streamlit_theme
@@ -54,6 +52,7 @@ class AuthenticationManager:
     def login(self, username, password):
         # Check if the user is already logged in
         if self.logged_in_user:
+            print("User is already logged in")
             return "User is already logged in"
 
         try:
@@ -64,12 +63,16 @@ class AuthenticationManager:
                 # If the user exists, check if the password matches
                 if user.password == password:
                     self.logged_in_user = user
+                    print(f"Login successful: {self.logged_in_user.username}, Type: {self.logged_in_user.user_type}")
                     return "Login successful"
                 else:
+                    print("Invalid username or password")
                     return "Invalid username or password"
             else:
+                print("User does not exist")
                 return "User does not exist"
         except SQLAlchemyError as e:
+            print(f"An error occurred: {e}")
             return "An error occurred while processing your request. Please try again later."
 
     def logout(self):
@@ -120,8 +123,6 @@ class AuthenticationManager:
             user = User(username=username, password=password, user_type=user_type, email=email)
 
             requests.post("http://localhost:8000/api/user", json=user.dict())
-
-            state.state_connect(username)
 
             return "User registered successfully"
         except SQLAlchemyError as e:

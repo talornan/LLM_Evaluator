@@ -24,12 +24,11 @@ from llm_code.pagesOfApp.style.homeStyle import configure_home_theme
 
 st.set_page_config(initial_sidebar_state="collapsed")
 
-client = OpenAI(api_key="")
-# Set Streamlit page configuration
-
 # Apply Streamlit theme
 st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
 
+client = OpenAI(api_key="")
+# Set Streamlit page configuration
 
 if not state.is_connected():
     st.markdown(
@@ -60,7 +59,7 @@ else:
     text_color = "#800080"
 
     st.markdown('<div class="welcome-message">Hello ' + state.get_user_name() + '</div>', unsafe_allow_html=True)
-    st.page_link("Home.py", label="home", icon="🏠")
+    # st.page_link("Home.py", label="home", icon="🏠")
 
     # Define available metrics
     available_metrics = ["Rouge", "exact_match", "Chrf", "Toxicity", "Bleu"]

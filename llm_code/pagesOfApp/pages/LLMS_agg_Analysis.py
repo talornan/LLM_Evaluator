@@ -111,5 +111,4 @@ else:
             )
             st.altair_chart(chart, use_container_width=True)
 
-    st.page_link("Home.py", label="home", icon="🏠")
     logout()

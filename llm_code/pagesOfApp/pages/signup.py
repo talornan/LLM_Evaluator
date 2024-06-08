@@ -6,9 +6,10 @@ import sys
 import streamlit as st
 from sqlalchemy.orm import sessionmaker
 
+from llm_code import state
 from llm_code.app.api.models.users import users
 from llm_code.app.core.config.db import engine
-
+from llm_code.pagesOfApp.pages.login import logout
 
 sys.path.append('..')
 sys.path.append('../..')
@@ -26,7 +27,7 @@ from llm_code.pagesOfApp.style.style import configure_streamlit_theme
 from llm_code.pagesOfApp.style.style import configure_streamlit_theme
 from llm_code.pagesOfApp.authentication import AuthenticationManager
 
-#hide the sidebar
+# hide the sidebar
 st.set_page_config(initial_sidebar_state="collapsed")
 
 st.markdown(
@@ -39,7 +40,6 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
-
 
 st.markdown(configure_streamlit_theme(), unsafe_allow_html=True)
 
@@ -60,6 +60,7 @@ async def add_user_async(username, email, password, user_type):
         response = await create_user(User(**user_data))
         if response.get("success"):
             st.success("User added successfully!")
+            st.balloons()
         else:
             st.error("Failed to add user. Please try again later.")
 
@@ -75,6 +76,11 @@ def add_user(username, email, password, user_type):
 
 def signup():
     st.title("Signup")
+
+    if state.is_connected():
+        st.warning(f"A user is already connected: {state.get_user_name()}. Please logout first.")
+        logout()
+        return
 
     # Collect user input
     username = st.text_input("Username", placeholder="Enter your username")

@@ -84,7 +84,6 @@ if state.is_connected():
     # else:
     #     st.page_link("Home.py", label="home", icon="🏠")
 
-
     logout()
 else:
     login()

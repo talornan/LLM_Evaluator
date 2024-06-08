@@ -1,6 +1,9 @@
 import streamlit as st
 from streamlit_extras.switch_page_button import switch_page
 import sys
+
+
+
 sys.path.append('..')
 sys.path.append('../..')
 sys.path.append('../../..')
@@ -10,6 +13,7 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '../..')
 from llm_code import state
 from llm_code.pagesOfApp.authentication import AuthenticationManager
 from llm_code.pagesOfApp.style.homeStyle import configure_home_theme
+from llm_code.pagesOfApp.pages.login import logout
 
 auth_manager = AuthenticationManager()
 
@@ -22,6 +26,14 @@ def home():
 
     if state.is_connected():
         st.markdown('<div class="welcome-message">Hello ' + state.get_user_name() + '</div>', unsafe_allow_html=True)
+        if auth_manager.logged_in_user:
+            if auth_manager.logged_in_user.user_type == "prompt_engineer":
+                st.page_link("pages/LLMS_Analysis.py", label="TO LLMS Analysis Click Here", icon="📊")
+            elif auth_manager.logged_in_user.user_type == "model_developer":
+                st.page_link("pages/LLMS_agg_Analysis.py", label=" TO LLMS agg Analysis Click Here ", icon="📊")
+            logout()
+        else:
+            st.error("User data not available after connection.")
     else:
         st.markdown('<div class="greeting-message">Hello guest</div>', unsafe_allow_html=True)
 
@@ -42,6 +54,8 @@ def home():
     # Center-align all columns
     st.markdown('<div style="display: flex; justify-content: center;">', unsafe_allow_html=True)
 
+
+
     # Create a container for the buttons
     with st.container():
         # Create a row for the buttons
@@ -58,6 +72,8 @@ def home():
         with col5:
             if st.button("About the app", key="about_button"):
                 switch_page("aboutApp")
+
+
 
     st.markdown('</div>', unsafe_allow_html=True)  # Close center-aligning container
 
